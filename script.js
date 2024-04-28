@@ -1,8 +1,7 @@
-﻿let board = [];
+let board = [];
 let currentPlayer = 'red';
 let gameActive = true;
 
-// Funcția pentru a crea tabla de joc și a adăuga evenimente de click
 function createBoard() {
     const boardElement = document.getElementById('board');
     for (let row = 0; row < 6; ++row) {
@@ -20,7 +19,6 @@ function createBoard() {
     }
 }
 
-// Funcția pentru a efectua o mutare
 function playMove(col) {
     if (!gameActive) return;
     for (let row = 5; row >= 0; --row) {
@@ -41,17 +39,14 @@ function playMove(col) {
     }
 }
 
-// verifica dacă jocul s-a terminat cu o victorie
 function checkWin(row, col) {
    return false;
 }
 
-// verifica dacă jocul s-a terminat cu remiză
 function checkDraw() {
     return false;
 }
 
-// Funcția pentru a reseta jocul
 function resetGame() {
     board.forEach(row => row.forEach(cell => {
         cell.style.backgroundColor = '#f0f0f0';
@@ -82,7 +77,6 @@ function checkWin(row, col) {
     }
     if (count >= 4) return true;
 
-    // Verificăm pe verticală
     count = 1;
     for (let i = row - 1; i >= 0; --i) {
         if (board[i][col].dataset.filled === color) {
@@ -100,7 +94,6 @@ function checkWin(row, col) {
     }
     if (count >= 4) return true;
 
-    // Verificăm pe diagonală (stânga-sus la dreapta-jos)
     count = 1;
     for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) {
         if (board[i][j].dataset.filled === color) {
@@ -118,7 +111,6 @@ function checkWin(row, col) {
     }
     if (count >= 4) return true;
 
-    // Verificăm pe diagonală (dreapta-sus la stânga-jos)
     count = 1;
     for (let i = row - 1, j = col + 1; i >= 0 && j < 7; --i, ++j) {
         if (board[i][j].dataset.filled === color) {
@@ -139,5 +131,4 @@ function checkWin(row, col) {
     return false;
 }
 
-// Creăm tabla de joc noua
 createBoard();
