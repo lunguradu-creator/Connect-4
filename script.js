@@ -40,12 +40,29 @@ function playMove(col) {
 }
 
 function checkWin(row, col) {
-   return false;
-}
-
-function checkDraw() {
+    // Verifică dacă există o linie câștigătoare pe orizontală sau verticală
+    if (checkHorizontalVertical(row, col)) {
+        return true;
+    }
+    // Verifică dacă există o linie câștigătoare pe diagonale
+    if (checkDiagonals(row, col)) {
+        return true;
+    }
     return false;
 }
+
+
+function checkDraw() {
+    for (let row = 0; row < 6; row++) {
+        for (let col = 0; col < 7; col++) {
+            if (board[row][col].dataset.filled === 'empty') {
+                return false; // Găsește o celulă necompletată, deci nu este remiză
+            }
+        }
+    }
+    return true; // Toate celulele sunt completate și nu există câștigător
+}
+
 
 function resetGame() {
     board.forEach(row => row.forEach(cell => {
@@ -57,76 +74,53 @@ function resetGame() {
     gameActive = true;
 }
 
-function checkWin(row, col) {
+function checkHorizontalVertical(row, col) {
     const color = board[row][col].dataset.filled;
-    // Verificăm pe orizontală
-    let count = 1;
-    for (let i = col - 1; i >= 0; --i) {
-        if (board[row][i].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
-    }
-    for (let i = col + 1; i < 7; ++i) {
-        if (board[row][i].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
-    }
-    if (count >= 4) return true;
 
-    count = 1;
-    for (let i = row - 1; i >= 0; --i) {
-        if (board[i][col].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
+    // Verificarea pe orizontală
+    let horizontalCount = 1;
+    for (let i = col - 1; i >= 0 && board[row][i].dataset.filled === color; --i) {
+        ++horizontalCount;
     }
-    for (let i = row + 1; i < 6; ++i) {
-        if (board[i][col].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
+    for (let i = col + 1; i < 7 && board[row][i].dataset.filled === color; ++i) {
+        ++horizontalCount;
     }
-    if (count >= 4) return true;
+    if (horizontalCount >= 4) return true;
 
-    count = 1;
-    for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) {
-        if (board[i][j].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
+    // Verificarea pe verticală
+    let verticalCount = 1;
+    for (let i = row - 1; i >= 0 && board[i][col].dataset.filled === color; --i) {
+        ++verticalCount;
     }
-    for (let i = row + 1, j = col + 1; i < 6 && j < 7; ++i, ++j) {
-        if (board[i][j].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
+    for (let i = row + 1; i < 6 && board[i][col].dataset.filled === color; ++i) {
+        ++verticalCount;
     }
-    if (count >= 4) return true;
+    if (verticalCount >= 4) return true;
 
-    count = 1;
-    for (let i = row - 1, j = col + 1; i >= 0 && j < 7; --i, ++j) {
-        if (board[i][j].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
+    return false;
+}
+function checkDiagonals(row, col) {
+    const color = board[row][col].dataset.filled;
+
+    // Verificarea pe diagonală principală (\)
+    let mainDiagonalCount = 1;
+    for (let i = 1; row - i >= 0 && col - i >= 0 && board[row - i][col - i].dataset.filled === color; ++i) {
+        ++mainDiagonalCount;
     }
-    for (let i = row + 1, j = col - 1; i < 6 && j >= 0; ++i, --j) {
-        if (board[i][j].dataset.filled === color) {
-            ++count;
-        } else {
-            break;
-        }
+    for (let i = 1; row + i < 6 && col + i < 7 && board[row + i][col + i].dataset.filled === color; ++i) {
+        ++mainDiagonalCount;
     }
-    if (count >= 4) return true;
+    if (mainDiagonalCount >= 4) return true;
+
+    // Verificarea pe diagonală secundară (/)
+    let secondaryDiagonalCount = 1;
+    for (let i = 1; row - i >= 0 && col + i < 7 && board[row - i][col + i].dataset.filled === color; ++i) {
+        ++secondaryDiagonalCount;
+    }
+    for (let i = 1; row + i < 6 && col - i >= 0 && board[row + i][col - i].dataset.filled === color; ++i) {
+        ++secondaryDiagonalCount;
+    }
+    if (secondaryDiagonalCount >= 4) return true;
 
     return false;
 }
