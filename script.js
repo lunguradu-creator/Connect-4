@@ -26,10 +26,10 @@ function playMove(col) {
             board[row][col].style.backgroundColor = currentPlayer;
             board[row][col].dataset.filled = currentPlayer;
             if (checkWin(row, col)) {
-                document.getElementById('message').innerText = `${currentPlayer.toUpperCase()} a câștigat!`;
+                document.getElementById('message').innerText = `${currentPlayer.toUpperCase()} has won!`;
                 gameActive = false;
             } else if (checkDraw()) {
-                document.getElementById('message').innerText = 'Remiză!';
+                document.getElementById('message').innerText = 'No winner!';
                 gameActive = false;
             } else {
                 currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
@@ -40,11 +40,11 @@ function playMove(col) {
 }
 
 function checkWin(row, col) {
-    // Verifică dacă există o linie câștigătoare pe orizontală sau verticală
+   
     if (checkHorizontalVertical(row, col)) {
         return true;
     }
-    // Verifică dacă există o linie câștigătoare pe diagonale
+  
     if (checkDiagonals(row, col)) {
         return true;
     }
@@ -56,11 +56,11 @@ function checkDraw() {
     for (let row = 0; row < 6; row++) {
         for (let col = 0; col < 7; col++) {
             if (board[row][col].dataset.filled === 'empty') {
-                return false; // Găsește o celulă necompletată, deci nu este remiză
+                return false; 
             }
         }
     }
-    return true; // Toate celulele sunt completate și nu există câștigător
+    return true;
 }
 
 
@@ -77,7 +77,6 @@ function resetGame() {
 function checkHorizontalVertical(row, col) {
     const color = board[row][col].dataset.filled;
 
-    // Verificarea pe orizontală
     let horizontalCount = 1;
     for (let i = col - 1; i >= 0 && board[row][i].dataset.filled === color; --i) {
         ++horizontalCount;
@@ -87,7 +86,6 @@ function checkHorizontalVertical(row, col) {
     }
     if (horizontalCount >= 4) return true;
 
-    // Verificarea pe verticală
     let verticalCount = 1;
     for (let i = row - 1; i >= 0 && board[i][col].dataset.filled === color; --i) {
         ++verticalCount;
@@ -102,7 +100,6 @@ function checkHorizontalVertical(row, col) {
 function checkDiagonals(row, col) {
     const color = board[row][col].dataset.filled;
 
-    // Verificarea pe diagonală principală (\)
     let mainDiagonalCount = 1;
     for (let i = 1; row - i >= 0 && col - i >= 0 && board[row - i][col - i].dataset.filled === color; ++i) {
         ++mainDiagonalCount;
@@ -112,7 +109,6 @@ function checkDiagonals(row, col) {
     }
     if (mainDiagonalCount >= 4) return true;
 
-    // Verificarea pe diagonală secundară (/)
     let secondaryDiagonalCount = 1;
     for (let i = 1; row - i >= 0 && col + i < 7 && board[row - i][col + i].dataset.filled === color; ++i) {
         ++secondaryDiagonalCount;
