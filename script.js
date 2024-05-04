@@ -1,12 +1,18 @@
+const ROWS = 6;
+const COLUMNS = 7;
+const START_ROW = 5;
+const CONNECT_FOUR = 4;
+const RESET_COLOR = '#f0f0f0';
+
 let board = [];
 let currentPlayer = 'red';
 let gameActive = true;
 
 function createBoard() {
     const boardElement = document.getElementById('board');
-    for (let row = 0; row < 6; ++row) {
+    for (let row = 0; row < ROWS; ++row) {
         board[row] = [];
-        for (let col = 0; col < 7; ++col) {
+        for (let col = 0; col < COLUMNS; ++col) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
             cell.dataset.row = row;
@@ -21,7 +27,7 @@ function createBoard() {
 
 function playMove(col) {
     if (!gameActive) return;
-    for (let row = 5; row >= 0; --row) {
+    for (let row = START_ROW; row >= 0; --row) {
         if (board[row][col].dataset.filled === 'empty') {
             board[row][col].style.backgroundColor = currentPlayer;
             board[row][col].dataset.filled = currentPlayer;
@@ -40,33 +46,26 @@ function playMove(col) {
 }
 
 function checkWin(row, col) {
-   
-    if (checkHorizontalVertical(row, col)) {
-        return true;
-    }
-  
-    if (checkDiagonals(row, col)) {
+    if (checkHorizontalVertical(row, col) || checkDiagonals(row, col)) {
         return true;
     }
     return false;
 }
 
-
 function checkDraw() {
-    for (let row = 0; row < 6; row++) {
-        for (let col = 0; col < 7; col++) {
+    for (let row = 0; row < ROWS; ++row) {
+        for (let col = 0; col < COLUMNS; ++col) {
             if (board[row][col].dataset.filled === 'empty') {
-                return false; 
+                return false;
             }
         }
     }
     return true;
 }
 
-
 function resetGame() {
     board.forEach(row => row.forEach(cell => {
-        cell.style.backgroundColor = '#f0f0f0';
+        cell.style.backgroundColor = RESET_COLOR;
         cell.dataset.filled = 'empty';
     }));
     document.getElementById('message').innerText = '';
@@ -76,27 +75,27 @@ function resetGame() {
 
 function checkHorizontalVertical(row, col) {
     const color = board[row][col].dataset.filled;
-
     let horizontalCount = 1;
     for (let i = col - 1; i >= 0 && board[row][i].dataset.filled === color; --i) {
         ++horizontalCount;
     }
-    for (let i = col + 1; i < 7 && board[row][i].dataset.filled === color; ++i) {
+    for (let i = col + 1; i < COLUMNS && board[row][i].dataset.filled === color; ++i) {
         ++horizontalCount;
     }
-    if (horizontalCount >= 4) return true;
+    if (horizontalCount >= CONNECT_FOUR) return true;
 
     let verticalCount = 1;
     for (let i = row - 1; i >= 0 && board[i][col].dataset.filled === color; --i) {
         ++verticalCount;
     }
-    for (let i = row + 1; i < 6 && board[i][col].dataset.filled === color; ++i) {
+    for (let i = row + 1; i < ROWS && board[i][col].dataset.filled === color; ++i) {
         ++verticalCount;
     }
-    if (verticalCount >= 4) return true;
+    if (verticalCount >= CONNECT_FOUR) return true;
 
     return false;
 }
+
 function checkDiagonals(row, col) {
     const color = board[row][col].dataset.filled;
 
@@ -104,19 +103,19 @@ function checkDiagonals(row, col) {
     for (let i = 1; row - i >= 0 && col - i >= 0 && board[row - i][col - i].dataset.filled === color; ++i) {
         ++mainDiagonalCount;
     }
-    for (let i = 1; row + i < 6 && col + i < 7 && board[row + i][col + i].dataset.filled === color; ++i) {
+    for (let i = 1; row + i < ROWS && col + i < COLUMNS && board[row + i][col + i].dataset.filled === color; ++i) {
         ++mainDiagonalCount;
     }
-    if (mainDiagonalCount >= 4) return true;
+    if (mainDiagonalCount >= CONNECT_FOUR) return true;
 
     let secondaryDiagonalCount = 1;
-    for (let i = 1; row - i >= 0 && col + i < 7 && board[row - i][col + i].dataset.filled === color; ++i) {
+    for (let i = 1; row - i >= 0 && col + i < COLUMNS && board[row - i][col + i].dataset.filled === color; ++i) {
         ++secondaryDiagonalCount;
     }
-    for (let i = 1; row + i < 6 && col - i >= 0 && board[row + i][col - i].dataset.filled === color; ++i) {
+    for (let i = 1; row + i < ROWS && col - i >= 0 && board[row + i][col - i].dataset.filled === color; ++i) {
         ++secondaryDiagonalCount;
     }
-    if (secondaryDiagonalCount >= 4) return true;
+    if (secondaryDiagonalCount >= CONNECT_FOUR) return true;
 
     return false;
 }
